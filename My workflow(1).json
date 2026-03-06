@@ -1,0 +1,178 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Brand tweet generator",
+        "formDescription": "Generate 10 tweets for any brand",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Brand Name"
+            },
+            {
+              "fieldLabel": "Industry/Category"
+            },
+            {
+              "fieldLabel": "Product/Services"
+            },
+            {
+              "fieldLabel": "Campaign Objective",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Engagement"
+                  },
+                  {
+                    "option": "Awareness"
+                  },
+                  {
+                    "option": "Promotion"
+                  },
+                  {
+                    "option": "Community Building"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Preferred Tone",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Witty & Humorous"
+                  },
+                  {
+                    "option": "Bold & Confident"
+                  },
+                  {
+                    "option": "Informative & Educational"
+                  },
+                  {
+                    "option": "Minimalist"
+                  },
+                  {
+                    "option": "Inspirational"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e321410a-efcb-4475-92b3-465d9f8c4097",
+      "name": "On form submission",
+      "webhookId": "c6326f20-7b2a-4826-9524-1a8b7954d181"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a senior brand strategist and social media creative director.\n\nYour task is to analyze a brand and generate social media tweets that match the brand's voice.\n\nBrand Information\n\nBrand Name: {{$json[\"Brand Name\"]}}\nIndustry: {{$json[\"Industry/Category\"]}}\nProducts/Services: {{$json[\"Product/Services\"]}}\nCampaign Objective: {{$json[\"Campaign Objective\"]}}\nPreferred Tone: {{$json[\"Preferred Tone\"]}}\n\nIf the brand is a well-known company (for example Nykaa, Nike, Zomato, Netflix), align the tweets with their real social media personality and marketing tone.\n\n----------------------------------\n\nSTEP 1 — Brand Voice Analysis\n\nAnalyze the brand based on the information above and infer:\n\n• Brand tone and personality  \n• Target audience  \n• Content themes  \n• Communication style  \n\nWrite this as 3–5 bullet points.\n\n----------------------------------\n\nSTEP 2 — Content Strategy\n\nExplain briefly how the brand should communicate on social media to achieve the campaign objective.\n\n(2–3 lines only)\n\n----------------------------------\n\nSTEP 3 — Generate Tweets\n\nGenerate 10 tweets that match the brand voice.\n\nThe tweets should include a mix of:\n\n• witty / meme style  \n• conversational  \n• promotional  \n• informative  \n• bold one-liner  \n\nRules:\n\n• Maximum 280 characters  \n• Sound authentic to the brand  \n• Avoid generic marketing language  \n• Make tweets engaging and social-media ready  \n• Each tweet should feel unique\n\n----------------------------------\n\nOUTPUT FORMAT\n\nBrand Voice Summary:\n• Tone & Personality\n• Target Audience\n• Content Themes\n• Communication Style\n\nContent Strategy:\n(short paragraph)\n\nGenerated Tweets:\n\n1.\n2.\n3.\n4.\n5.\n6.\n7.\n8.\n9.\n10.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        208,
+        0
+      ],
+      "id": "91e59d03-0352-4f7f-b13c-6e8cc9995840",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Your 10 On-Brand Tweets are Ready!",
+        "completionMessage": "={{ $('Basic LLM Chain').item.json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        560,
+        0
+      ],
+      "id": "0a7d1d54-89e4-4878-9c49-e50f5ac01903",
+      "name": "Form",
+      "webhookId": "49b6eaa7-5acf-404f-b4c0-4470dbe078bb"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        144,
+        208
+      ],
+      "id": "6629262a-93a5-4982-ac2c-00d32c770842",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "3Ol1aWEmai6emitc",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "1eae4f8d-14b2-453d-b7ce-f7b9abb7580c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ef814830b5a9432451b2da2db3589d3ccc6637091da325fdffb1ff2f7be82288"
+  },
+  "id": "148gmp0ikMrP4iD6",
+  "tags": []
+}
