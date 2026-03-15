@@ -83,6 +83,8 @@ N8N-AI-Tweet-Generator
 
 ---
 
+You can try by clicking this link- https://primary-production-793ed.up.railway.app/form/17702924-2097-40d4-8b2f-236c730aaeac
+
 # ▶ How to Run
 
 ## 1. Install Node.js
